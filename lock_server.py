@@ -66,6 +66,12 @@ class resource_lock:
         Retorna o número de vezes que este recurso já foi bloqueado.
         """
         return self.lock_counter
+
+    def time(self):
+        """
+        Devolve o tempo limite do recurso
+        """
+        return self.time
         
 ###############################################################################
 
@@ -76,8 +82,9 @@ class lock_pool:
         ser manipulados pelos métodos desta classe.
         """
         lock_pool_array=[]
-        
-        pass # Remover esta linha e fazer implementação da função
+        for i in range(N):
+            lock_pool_array.append(resource_lock())
+
         
     def clear_expired_locks(self):
         """
@@ -85,7 +92,9 @@ class lock_pool:
         de concessão do bloqueio. Liberta os recursos caso o seu tempo de
         concessão tenha expirado.
         """
-        pass # Remover esta linha e fazer implementação da função
+        for lock in self.lock_pool_array:
+            if(lock.time()):
+                pass
 
     def lock(self, resource_id, client_id, time_limit):
         """
