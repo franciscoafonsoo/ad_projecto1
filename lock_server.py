@@ -17,10 +17,10 @@ class resource_lock:
         """
         Define e inicializa as características de um LOCK num recurso.
         """
-        lock_state=False
-        lock_counter=0
-        resource_owner=0
-        time="time_placeholder"
+        self.lock_state = False
+        self.lock_counter = 0
+        self.resource_owner = 0
+        self.time = "time_placeholder"
 
     def lock(self, client_id, time_limit):
         """
@@ -29,11 +29,11 @@ class resource_lock:
         o bloqueio do recurso até time_limit.
         Retorna True se bloqueou o recurso ou False caso contrário.
         """
-        if(not(self.lock_state)):
-            self.lock_counter+=1
-            self.lock_state=True
-            self.resource_owner=client_id
-            self.time=time_limit
+        if not self.lock_state:
+            self.lock_counter += 1
+            self.lock_state = True
+            self.resource_owner = client_id
+            self.time = time_limit
             return True
         return False
 
@@ -48,7 +48,7 @@ class resource_lock:
 
 
     def release(self, client_id):
-        if(self.resource_owner==client_id):
+        if self.resource_owner==client_id:
             self.lock_state=False
             self.resource_owner=0
             self.time="time_placeholder"

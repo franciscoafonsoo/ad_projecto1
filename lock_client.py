@@ -7,7 +7,8 @@ Números de aluno:
 """
 # Zona para fazer imports
 
-import sys,sock_utils
+import sys
+import sock_utils
 
 # Programa principal
 
@@ -28,5 +29,3 @@ if len(sys.argv) > 2:
 
 else:
     print "Sem argumentos ou argumentos incompletos"
-
-
