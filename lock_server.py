@@ -81,9 +81,9 @@ class lock_pool:
         Define um array com um conjunto de locks para N recursos. Os locks podem
         ser manipulados pelos métodos desta classe.
         """
-        lock_pool_array=[]
+        self.lock_pool_array=[]
         for i in range(N):
-            lock_pool_array.append(resource_lock())
+            self.lock_pool_array.append(resource_lock())
 
         
     def clear_expired_locks(self):
@@ -93,8 +93,9 @@ class lock_pool:
         concessão tenha expirado.
         """
         for lock in self.lock_pool_array:
-            if(lock.time()):
-                pass
+            if(lock.time()<datetime.datetime.now().time()):
+                lock.urelease()
+
 
     def lock(self, resource_id, client_id, time_limit):
         """
@@ -102,27 +103,27 @@ class lock_pool:
         instante time_limit. Retorna True em caso de sucesso e False caso
         contrário.
         """
-        pass # Remover esta linha e fazer implementação da função
+        return self.lock_pool_array[resource_id].lock(client_id,time_limit)
 
     def release(self, resource_id, client_id):
         """
         Tenta libertar o recurso resource_id pelo cliente client_id. Retorna
         True em caso de sucesso e False caso contrário.
         """
-        pass # Remover esta linha e fazer implementação da função
+        return self.lock_pool_array[resource_id].release(client_id)
 
     def test(self,resource_id):
         """
         Retorna True se o recurso resource_id estiver bloqueado e False caso
         contrário.
         """
-        pass # Remover esta linha e fazer implementação da função
+        return self.lock_pool_array[resource_id].test()
 
     def stat(self,resource_id):
         """
         Retorna o número de vezes que o recurso resource_id já foi bloqueado.
         """
-        pass # Remover esta linha e fazer implementação da função
+        return self.lock_pool_array[resource_id].stat()
 
     def __repr__(self):
         """
@@ -130,7 +131,11 @@ class lock_pool:
         esta função é usada, por exemplo, se uma instância da classe for
         passada à função print.
         """
-        output = ""
+        output=""
+        counter=0
+        for lock in self.lock_pool_array:
+            output+="recurso " + str(counter) + " bloqueado pelo cliente " + str(lock.resource_owner) + "\n"
+            counter+=1
         #
         # Acrecentar a output uma linha por cada recurso bloqueado, da forma:
         # recurso <número do recurso> bloqueado pelo cliente <id do cliente> até
