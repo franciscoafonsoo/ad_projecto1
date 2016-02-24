@@ -7,7 +7,7 @@ Números de aluno:
 """
 
 # Zona para fazer importação
-
+import datetime
 
 
 ###############################################################################
@@ -17,7 +17,10 @@ class resource_lock:
         """
         Define e inicializa as características de um LOCK num recurso.
         """
-        pass # Remover esta linha e fazer implementação da função
+        lock_state=False
+        lock_counter=0
+        resource_owner=0
+        time="time_placeholder"
 
     def lock(self, client_id, time_limit):
         """
@@ -26,33 +29,43 @@ class resource_lock:
         o bloqueio do recurso até time_limit.
         Retorna True se bloqueou o recurso ou False caso contrário.
         """
-        pass # Remover esta linha e fazer implementação da função
+        if(not(self.lock_state)):
+            self.lock_counter+=1
+            self.lock_state=True
+            self.resource_owner=client_id
+            self.time=time_limit
+            return True
+        return False
 
     def urelease(self):
         """
         Liberta o recurso incondicionalmente, alterando os valores associados
         ao bloqueio.
         """
-        pass # Remover esta linha e fazer implementação da função
+        self.lock_state=False
+        self.resource_owner=0
+        self.time="time_placeholder"
+
 
     def release(self, client_id):
-        """
-        Liberta o recurso se este foi bloqueado pelo cliente client_id,
-        retornando True nesse caso. Caso contrário retorna False.
-        """
-        pass # Remover esta linha e fazer implementação da função
+        if(self.resource_owner==client_id):
+            self.lock_state=False
+            self.resource_owner=0
+            self.time="time_placeholder"
+            return True
+        return False
 
     def test(self):
         """
         Retorna o estado de bloqueio do recurso.
         """
-        pass # Remover esta linha e fazer implementação da função
+        return self.lock_state
     
     def stat(self):
         """
         Retorna o número de vezes que este recurso já foi bloqueado.
         """
-        pass # Remover esta linha e fazer implementação da função
+        return self.lock_counter
         
 ###############################################################################
 
@@ -62,6 +75,7 @@ class lock_pool:
         Define um array com um conjunto de locks para N recursos. Os locks podem
         ser manipulados pelos métodos desta classe.
         """
+        lock_pool_array=[]
         
         pass # Remover esta linha e fazer implementação da função
         
