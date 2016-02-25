@@ -7,7 +7,7 @@ Números de aluno:
 """
 
 # Zona para fazer importação
-import datetime
+import time as t,pickle,sock_utils,sys
 
 
 ###############################################################################
@@ -20,7 +20,7 @@ class resource_lock:
         self.lock_state = False
         self.lock_counter = 0
         self.resource_owner = 0
-        self.time = "time_placeholder"
+        self.time_expire = 0
 
     def lock(self, client_id, time_limit):
         """
@@ -33,7 +33,7 @@ class resource_lock:
             self.lock_counter += 1
             self.lock_state = True
             self.resource_owner = client_id
-            self.time = time_limit
+            self.time_expire= time_limit
             return True
         return False
 
@@ -44,14 +44,14 @@ class resource_lock:
         """
         self.lock_state=False
         self.resource_owner=0
-        self.time="time_placeholder"
+        self.time_expire=0
 
 
     def release(self, client_id):
         if self.resource_owner==client_id:
             self.lock_state=False
             self.resource_owner=0
-            self.time="time_placeholder"
+            self.time_expire=0
             return True
         return False
 
@@ -60,7 +60,7 @@ class resource_lock:
         Retorna o estado de bloqueio do recurso.
         """
         return self.lock_state
-    
+
     def stat(self):
         """
         Retorna o número de vezes que este recurso já foi bloqueado.
@@ -71,8 +71,8 @@ class resource_lock:
         """
         Devolve o tempo limite do recurso
         """
-        return self.time
-        
+        return self.time_expire
+
 ###############################################################################
 
 class lock_pool:
@@ -85,7 +85,7 @@ class lock_pool:
         for i in range(N):
             self.lock_pool_array.append(resource_lock())
 
-        
+
     def clear_expired_locks(self):
         """
         Verifica se os recursos que estão bloqueados ainda estão dentro do tempo
@@ -93,7 +93,7 @@ class lock_pool:
         concessão tenha expirado.
         """
         for lock in self.lock_pool_array:
-            if(lock.time()<datetime.datetime.now().time()):
+            if lock.time()<t.time():
                 lock.urelease()
 
 
@@ -150,5 +150,70 @@ class lock_pool:
 
 # código do programa principal
 
+lp = lock_pool(10)
+HOST = ''
+PORT = int(sys.argv[1])
+resource_number=int(sys.argv[2])
+resource_time=int(sys.argv[3])
+msgcliente = []
+ret = []
+sock=sock_utils.create_tcp_server_socket(HOST,PORT,1)
 
+if(len(sys.argv)>3):
+    while True:
+        (conn_sock, addr) = sock.accept()
+        print 'ligado a %s', addr
+        try:
+            msg = sock_utils.receive_all(conn_sock,1024)
+            msg_unp = pickle.loads(msg)
+            print 'recebi %s' % msg_unp
+            msg_unp[1]=int(msg_unp[1])
+            if(len(msg_unp)>2):
+                msg_unp[2]=int(msg_unp[2])
+            if(msg_unp[0] == 'LOCK'):
+                lp.clear_expired_locks()
+                if msg_unp[2] > len(lp.lock_pool_array):
+                    msg_pronta_enviar = 'UNKNOWN RESOURCE'
+                else:
+                    if lp.lock(msg_unp[2], msg_unp[1], t.time() + resource_time):
+                        msg_pronta_enviar = 'OK'
+                    else:
+                        msg_pronta_enviar = 'NOK'
 
+            elif(msg_unp[0] == 'RELEASE'):
+                if msg_unp[2] > len(lp.lock_pool_array):
+                    msg_pronta_enviar = 'UNKNOWN RESOURCE'
+                else:
+                    if lp.release(msg_unp[2], msg_unp[1]):
+                        msg_pronta_enviar = 'OK'
+                    else:
+                        msg_pronta_enviar = 'NOK'
+
+            elif(msg_unp[0] == 'TEST'):
+                if msg_unp[1] > len(lp.lock_pool_array):
+                    msg_pronta_enviar = 'UNKNOWN RESOURCE'
+                else:
+                    if lp.test(msg_unp[1]):
+                        msg_pronta_enviar = 'LOCKED'
+                    else:
+                        msg_pronta_enviar = 'UNLOCKED'
+
+            elif(msg_unp[0] == 'STATS'):
+                if msg_unp[1] > len(lp.lock_pool_array):
+                    msg_pronta_enviar = 'UNKNOWN RESOURCE'
+                else:
+                    msg_pronta_enviar = lp.stat(msg_unp[1])
+
+            else:
+                print "ERROR ERROR ERROR ABORT ABORT ABORT :D"
+                msg_pronta_enviar = "cant do op"
+
+            msg_pronta_enviar = pickle.dumps(msg_pronta_enviar,-1)
+            conn_sock.sendall(msg_pronta_enviar)
+        except:
+            print "Unexpected error:", sys.exc_info()[0]
+            conn_sock.close()
+
+    sock.close()
+else:
+    print "Sem argumentos"
