@@ -6,9 +6,8 @@ def create_tcp_server_socket(address, port, queue_size):
     sock.listen(queue_size)
     return sock
 
-def create_tcp_client_socket(address, port):
+def create_tcp_client_socket():
     sock = s.socket(s.AF_INET, s.SOCK_STREAM)
-    sock.connect((address, port))
     return sock
 
 def receive_all(socket, length):

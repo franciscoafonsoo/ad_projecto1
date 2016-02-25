@@ -7,7 +7,7 @@ Números de aluno:
 
 # zona para fazer importação
 
-from sock_utils import create_tcp_client_socket
+import sock_utils as s,pickle
 
 # definição da classe server 
 
@@ -18,27 +18,30 @@ class server:
     e para terminar a ligação
     """
     def __init__(self, address, port):
-        """
-        Inicializa a classe com parâmetros para funcionamento futuro.
-        """
-        pass # Remover esta linha e fazer implementação da função
+        self.address=address
+        self.port=port
+        self.client_sock = s.create_tcp_client_socket()
         
     def connect(self):
         """
         Estabelece a ligação ao servidor especificado na inicialização do
         objeto.
         """
-        pass # Remover esta linha e fazer implementação da função
+        self.client_sock.connect((self.address, self.port))
+
 
     def send_receive(self, data):
         """
         Envia os dados contidos em data para a socket da ligação, e retorna a
         resposta recebida pela mesma socket.
         """
-        pass # Remover esta linha e fazer implementação da função
+        data=data.split(" ")
+        self.client_sock.sendall(pickle.dumps(data))
+        temp=s.receive_all(self.client_sock, 1024)
+        return pickle.loads(temp)
     
     def close(self):
         """
         Termina a ligação ao servidor.
         """
-        pass # Remover esta linha e fazer implementação da função
+        self.client_sock.close()
