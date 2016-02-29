@@ -19,13 +19,18 @@ if len(sys.argv) > 2:
     PORT = int(sys.argv[2])
     ID = int(sys.argv[3])
     lserver=n.server(HOST,PORT)
-
+    lserver.connect()
     while True:
-        msg = raw_input("Comando: ")
+        msg = raw_input("Comando > ")
         if msg == "exit":
+            lserver.close()
             sys.exit()
-        lserver.connect()
+
+        msg=msg.split(" ")
+        if("LOCK" in msg[0] or "RELEASE" in msg[0]):
+            msg.insert(1,ID)
         print 'Recebi ', lserver.send_receive(msg)
+
 
 
 
