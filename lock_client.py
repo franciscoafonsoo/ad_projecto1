@@ -8,11 +8,11 @@ Números de aluno:
 # Zona para fazer imports
 
 import sys
-import sock_utils
-import pickle
 import net_client as n
 
 # Programa principal
+
+client_commands = ["LOCK", "RELEASE", "TEST", "STATS", "EXIT"]
 
 if len(sys.argv) > 2:
     HOST = sys.argv[1]
@@ -22,12 +22,13 @@ if len(sys.argv) > 2:
 
     while True:
         msg = raw_input("Comando: ")
-        if msg == "exit":
-            sys.exit()
-        lserver.connect()
-        print 'Recebi ', lserver.send_receive(msg)
-
-
+        if msg in client_commands:
+            if msg == "EXIT":
+                lserver.close()
+                sys.exit()
+            print 'Recebi ', lserver.send_receive(msg)
+        else:
+            "Strange command try again"
 
 else:
     print "Sem argumentos ou argumentos incompletos"

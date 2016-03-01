@@ -1,4 +1,5 @@
 import socket as s
+
 def create_tcp_server_socket(address, port, queue_size):
     sock = s.socket(s.AF_INET, s.SOCK_STREAM)
     sock.setsockopt(s.SOL_SOCKET, s.SO_REUSEADDR, 1)

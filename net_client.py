@@ -44,4 +44,5 @@ class server:
         """
         Termina a ligação ao servidor.
         """
+
         self.client_sock.close()

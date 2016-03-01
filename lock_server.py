@@ -204,6 +204,8 @@ if(len(sys.argv)>3):
                 else:
                     msg_pronta_enviar = lp.stat(msg_unp[1])
 
+
+
             else:
                 print "ERROR ERROR ERROR ABORT ABORT ABORT :D"
                 msg_pronta_enviar = "cant do op"
