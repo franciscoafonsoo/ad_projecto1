@@ -35,7 +35,6 @@ class server:
         Envia os dados contidos em data para a socket da ligação, e retorna a
         resposta recebida pela mesma socket.
         """
-        data=data.split(" ")
         self.client_sock.sendall(pickle.dumps(data))
         temp=s.receive_all(self.client_sock, 1024)
         return pickle.loads(temp)
