@@ -160,8 +160,8 @@ ret = []
 sock=sock_utils.create_tcp_server_socket(HOST,PORT,1)
 
 if(len(sys.argv)>3):
+    (conn_sock, addr) = sock.accept()
     while True:
-        (conn_sock, addr) = sock.accept()
         print 'ligado a %s', addr
         try:
             msg = sock_utils.receive_all(conn_sock,1024)
@@ -203,8 +203,6 @@ if(len(sys.argv)>3):
                     msg_pronta_enviar = 'UNKNOWN RESOURCE'
                 else:
                     msg_pronta_enviar = lp.stat(msg_unp[1])
-
-
 
             else:
                 print "ERROR ERROR ERROR ABORT ABORT ABORT :D"
