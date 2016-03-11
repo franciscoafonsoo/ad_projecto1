@@ -19,15 +19,15 @@ if len(sys.argv) > 2:
     PORT = int(sys.argv[2])
     ID = int(sys.argv[3])
     lserver=n.server(HOST,PORT)
-    lserver.connect()
     while True:
         msg = raw_input("Comando: ")
         msg=msg.split(" ")
         if msg[0] in client_commands:
             if msg[0] == "EXIT":
-                lserver.close()
                 sys.exit()
+            lserver.connect()
             print 'Recebi ', lserver.send_receive(msg)
+            lserver.close()
         else:
             "Strange command try again"
 

@@ -160,15 +160,15 @@ ret = []
 sock=sock_utils.create_tcp_server_socket(HOST,PORT,1)
 
 if(len(sys.argv)>3):
-    (conn_sock, addr) = sock.accept()
+
     while True:
+        (conn_sock, addr) = sock.accept()
         print 'ligado a %s', addr
         try:
             msg = sock_utils.receive_all(conn_sock,1024)
             msg_unp = pickle.loads(msg)
             print 'recebi %s' % msg_unp
             msg_unp[1]=int(msg_unp[1])
-
             if(len(msg_unp)>2):
                 msg_unp[2]=int(msg_unp[2])
                 msg_unp[1]=int(msg_unp[1])
