@@ -1,6 +1,6 @@
-Projeto de Aplicações Distribuidas do grupo 025
+Projeto de Aplicações Distribuidas
 
------------------- Primeira Entrega ------------------
+            ------------------ Primeira Entrega ------------------
 
 Ficheiros pertencentes a entrega:
 lock_client.py
