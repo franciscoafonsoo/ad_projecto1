@@ -29,3 +29,5 @@ Guia de utilização:
 
 Limitações:
  Input de comandos do cliente não foi completamente sanitado.
+
+algumas alterações aqui
